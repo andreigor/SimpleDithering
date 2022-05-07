@@ -2,147 +2,114 @@ class InputParameterError(Exception):
     "Raised when input parameter is not as expected"
     pass
 
-class FloydSteinbergMask():
-    def __init__(self, direction = 'right'):
-        self.displacements = self.get_displacements(direction)
-        self.weights = self.get_weights()
-    
-    def get_displacements(self, direction):
-        
-        direction = 1 if direction == 'right' else -1
-        displacements = [[0, direction *  1],
-                         [1, direction * -1],
-                         [1, direction *  0],
-                         [1, direction *  1]]
-        return displacements
-    def get_weights(self):
-        weights = [7/16, 3/16, 5/16, 1/16]
-        return weights
+class DitheringMask():
+    def __init__(self, mask_strategy): 
+        self.mask_strategy = mask_strategy
+        self.weights, self.displacements = self.mask_strategy()
 
-class StevensonMask():
-    def __init__(self, direction = 'right'):
-        self.displacements = self.get_displacements(direction)
-        self.weights = self.get_weights()
-    
-    def get_displacements(self, direction):
-        direction = 1 if direction == 'right' else -1
-        displacements = [[0, direction *  2],  [1, direction * -3], [1, direction *  -1], [1, direction *  1],
-                         [1, direction *  3],  [2, direction * -2], [2, direction *   0], [2, direction *  2],
-                         [3, direction *  -3], [3, direction * -1], [3, direction *   1], [3, direction *  3]
-                         ]
-        return displacements
-    def get_weights(self):
-        weights = [32/200, 12/200, 26/200, 30/200, 16/200, 12/200,
-                   26/200, 12/200, 5/200, 12/200, 12/200, 5/200]
-        return weights
 
-class BurkesMask():
-    def __init__(self, direction = 'right'):
-        self.displacements = self.get_displacements(direction)
-        self.weights = self.get_weights()
-    
-    def get_displacements(self, direction):
-        direction = 1 if direction == 'right' else -1
-        displacements = [[0, direction *   1],
-                         [0, direction *   2],
-                         [1, direction *  -2],
-                         [1, direction *  -1],
-                         [1, direction *   0],
-                         [1, direction *   1],
-                         [1, direction *   2]
-                         ]
-        return displacements
-    def get_weights(self):
-        weights = [8/32, 4/32, 2/32, 4/32, 8/32, 4/32, 2/32]
-        return weights
+###################### FLOYD STEINBERG ###################
 
-class SierraMask():
-    def __init__(self, direction = 'right'):
-        self.displacements = self.get_displacements(direction)
-        self.weights = self.get_weights()
-    
-    def get_displacements(self, direction):
-        direction = 1 if direction == 'right' else -1
-        displacements = [[0, direction *   1],
-                         [0, direction *   2],
-                         [1, direction *  -2],
-                         [1, direction *  -1],
-                         [1, direction *   0],
-                         [1, direction *   1],
-                         [1, direction *   2],
-                         [2, direction *  -1],
-                         [2, direction *   0],
-                         [2, direction *   1]
-                         ]
-        return displacements
-    def get_weights(self):
-        weights = [5/32, 3/32, 2/32, 4/32, 5/32, 4/32, 2/32, 2/32, 3/32, 2/32]
-        return weights
-    
-class StuckiMask():
-    def __init__(self, direction = 'right'):
-        self.displacements = self.get_displacements(direction)
-        self.weights = self.get_weights()
-    
-    def get_displacements(self, direction):
-        direction = 1 if direction == 'right' else -1
-        displacements = [[0, direction *   1],
-                         [0, direction *   2],
-                         [1, direction *  -2],
-                         [1, direction *  -1],
-                         [1, direction *   0],
-                         [1, direction *   1],
-                         [1, direction *   2],
-                         [2, direction *  -2],
-                         [2, direction *  -1],
-                         [2, direction *   0],
-                         [2, direction *   1],
-                         [2, direction *   2]
-                         ]
-        return displacements
-    def get_weights(self):
-        weights = [8/42, 4/42, 2/42, 4/42, 8/42, 4/42, 2/42, 1/42, 2/42, 4/42, 2/42, 1/42]
-        return weights
+def _get_floyd_steinberg_weights():
+    return [7/16, 3/16, 5/16, 1/16]
 
-class JarvisJudiceNinkeMask():
-    def __init__(self, direction = 'right'):
-        self.displacements = self.get_displacements(direction)
-        self.weights = self.get_weights()
-    
-    def get_displacements(self, direction):
-        direction = 1 if direction == 'right' else -1
-        displacements = [[0, direction *   1],
-                         [0, direction *   2],
-                         [1, direction *  -2],
-                         [1, direction *  -1],
-                         [1, direction *   0],
-                         [1, direction *   1],
-                         [1, direction *   2],
-                         [2, direction *  -2],
-                         [2, direction *  -1],
-                         [2, direction *   0],
-                         [2, direction *   1],
-                         [2, direction *   2]
-                         ]
-        return displacements
-    def get_weights(self):
-        weights = [7/48, 5/48, 3/48, 5/48, 7/48, 5/48, 3/48, 1/48, 3/48, 5/48, 3/48, 1/48]
-        return weights
+def _get_floyd_steinberg_displacements():
+    return [[0,  1],[1, -1],[1,  0],[1,  1]]
 
-def get_chosen_mask(mask_choice, direction):
-    if mask_choice == 'floyd_steinberg':
-        return FloydSteinbergMask(direction)
-    elif mask_choice == 'stevenson':
-        return StevensonMask(direction)
-    elif mask_choice == 'burkes':
-        return BurkesMask(direction)
-    elif mask_choice == 'sierra':
-        return SierraMask(direction)
-    elif mask_choice == 'stucki':
-        return StuckiMask(direction)
-    elif mask_choice == 'jarvis_jucide_ninke':
-        return JarvisJudiceNinkeMask(direction)
+def floyd_steinberg_strategy():
+    weights = _get_floyd_steinberg_weights()
+    displacements = _get_floyd_steinberg_displacements()
+    return weights, displacements
+
+##################### STEVENSON #########################
+
+def _get_stevenson_weights():
+    return [32/200, 12/200, 26/200, 30/200, 16/200, 12/200,
+            26/200, 12/200, 5/200, 12/200, 12/200, 5/200]
+
+def _get_stevenson_displacements():
+    return [[0,  2],  [1, -3], [1,  -1], [1,  1],
+            [1,  3],  [2, -2], [2,   0], [2,  2],
+            [3,  -3], [3, -1], [3,   1], [3,  3]
+            ]
+            
+def stevenson_strategy():
+    weights = _get_stevenson_weights()
+    displacements = _get_stevenson_displacements()
+    return weights, displacements
+
+##################### BURKES #########################
+
+def _get_burkes_weights():
+    return [8/32, 4/32, 2/32, 4/32, 8/32, 4/32, 2/32]
+
+def _get_burkes_displacements():
+    return [[0,  1], [0,  2], [1, -2], [1, -1],
+            [1,  0], [1,  1], [1,  2]]
+
+def burkes_strategy():      
+    weights = _get_burkes_weights()
+    displacements = _get_burkes_displacements()
+    return weights, displacements
+
+##################### SIERRA #########################
+
+def _get_sierra_weights():
+    return [5/32, 3/32, 2/32, 4/32, 5/32, 4/32, 2/32, 2/32, 3/32, 2/32]
+
+def _get_sierra_displacements():
+    return [[0,  1], [0,  2], [1, -2], [1, -1],
+            [1,  0], [1,  1], [1,  2], [2, -1],
+            [2,  0], [2,  1]]
+
+def sierra_strategy():
+    weights = _get_sierra_weights()
+    displacements = _get_sierra_displacements()
+    return weights, displacements
+
+##################### STUCKI #########################
+
+def _get_stucki_weights():
+    return [8/42, 4/42, 2/42, 4/42, 8/42, 4/42, 2/42, 1/42, 2/42, 4/42, 2/42, 1/42]
+
+def _get_stucki_displacements():
+    return [[0,  1], [0,  2], [1, -2], [1, -1],
+            [1,  0], [1,  1], [1,  2], [2, -2], 
+            [2, -1], [2,  0], [2,  1], [2,  2]]
+
+def stucki_strategy():
+    weights = _get_stucki_weights()
+    displacements = _get_stucki_displacements()
+    return weights, displacements
+
+##################### JARVIS JUDICE NINKE #########################
+
+def _get_jarvis_judice_ninke_weights():
+    return [7/48, 5/48, 3/48, 5/48, 7/48, 5/48, 3/48, 1/48, 3/48, 5/48, 3/48, 1/48]
+
+def _get_jarvis_judice_ninke_displacements():
+    return [[0,  1], [0,  2], [1, -2], [1, -1],
+            [1,  0], [1,  1], [1,  2], [2, -2],
+            [2, -1], [2,  0], [2,  1], [2,  2]]
+
+def jarvis_judice_ninke_strategy():
+    weights = _get_jarvis_judice_ninke_weights()
+    displacements = _get_jarvis_judice_ninke_displacements()
+    return weights, displacements
+    
+def get_chosen_mask(chosen_mask):
+    masks = {key[:-9]: value for key,value in globals().items() if key.endswith('_strategy')}
+    
+    if chosen_mask in masks.keys():
+        return DitheringMask(masks[chosen_mask])
+    
     else:
         message = 'Error in masks.py - invalid input mask!\n'
         message += 'Available masks:\n floid_steinberg\n stevenson\n burkes\n sierra\n stucki\n jarvis_judice_ninke'
         raise NotImplementedError(message)
+
+
+
+
+
+

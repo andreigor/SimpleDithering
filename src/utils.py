@@ -1,3 +1,4 @@
+from typing import Tuple
 import numpy as np
 def get_index_from_direction(image: np.ndarray, x: int, y: int, direction: str) -> (int, int):
     """
@@ -46,7 +47,7 @@ def calculate_error(f: np.ndarray, output_image: np.ndarray, i: int, j: int) -> 
     return int(f[i,j]) - int(output_image[i,j] * 255)
 
 
-def difuse_error(f: np.ndarray, error: int, mask, i: int, j: int) -> None:
+def difuse_error(f: np.ndarray, error: int, mask, direction: str, i: int, j: int) -> None:
     """
     Applies the calculated error in the f image accordingly to the given mask.
 
@@ -60,20 +61,31 @@ def difuse_error(f: np.ndarray, error: int, mask, i: int, j: int) -> None:
     Returns:
     void: doesn't return anything, just modifies the f image
     """
+    direction = 1 if direction == 'right' else -1
     for displacement, weight in zip(mask.displacements, mask.weights):
         try:
-            f[i + displacement[0], j + displacement[1]] += weight * error
+            f[i + displacement[0], j +  direction * displacement[1]] += weight * error
         except IndexError:
             pass
 
-def get_dithering_direction(row: int) -> str:
+def get_dithering_direction(row: int, pattern: str) -> str:
     """
-    Gets the dithering direction from the matrix row. The idea is to
-    sweep the image from left to right in even rows and from right to left on odd rows
+    Gets the dithering direction from the matrix row and from chosen pattern.
+    There are 2 patterns types: zigzag and uniform. The uniform always sweeps the columns
+    from left to right, while the zigzag alternates between left to right and right to left.
+
     Parameters:
     row: current image row
+    pattern (str): uniform or zigzag. 
 
     Returns:
     string: dithering direction 
     """
-    return 'right' if (row % 2) == 0 else 'left'
+    if pattern == 'zigzag':
+        return 'right' if (row % 2) == 0 else 'left'
+    elif pattern == 'uniform':
+        return 'right'
+    else:
+        message = 'Error in utils.py - invalid dithering direction pattern!\n'
+        message += 'Available patterns:\nuniform (always left to right)\nzigzag (alternated pattern)'
+        raise NotImplementedError(message)
