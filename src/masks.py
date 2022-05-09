@@ -98,14 +98,18 @@ def jarvis_judice_ninke_strategy():
     return weights, displacements
     
 def get_chosen_mask(chosen_mask):
+    # getting function name and function object for every function defined as _strategy
     masks = {key[:-9]: value for key,value in globals().items() if key.endswith('_strategy')}
     
+    # returning the function mask chosen by user
     if chosen_mask in masks.keys():
         return DitheringMask(masks[chosen_mask])
     
+    # raising error if invalid mask argument
     else:
         message = 'Error in masks.py - invalid input mask!\n'
-        message += 'Available masks:\n floid_steinberg\n stevenson\n burkes\n sierra\n stucki\n jarvis_judice_ninke'
+        message += 'Available masks:'
+        message += ''.join([f'\n\t- {mask}' for mask in masks.keys()])
         raise NotImplementedError(message)
 
 

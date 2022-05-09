@@ -1,4 +1,3 @@
-from typing import Tuple
 import numpy as np
 def get_index_from_direction(image: np.ndarray, x: int, y: int, direction: str) -> (int, int):
     """

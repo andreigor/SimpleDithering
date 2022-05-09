@@ -29,7 +29,9 @@ def main():
     if len(sys.argv) != 5:
         message = 'Error in dithering.py:\n '
         message += '<P1> <P2> <P3> <P4> \n'
-        message += 'P1: Input image\nP2: Dithering Mask\nP3: sweeping method (uniform or zigzag)\nP4: Output image'
+        message += 'P1: Input image\nP2: Dithering Mask.\n'
+        message += '\t- floyd_steinberg\n \t- stevenson\n \t- burkes\n \t- sierra\n \t- stucki\n \t- jarvis_judice_ninke\n'
+        message += 'P3: Sweeping method.\n\t- uniform\n\t- zigzag\nP4: Output image'
         raise InputParameterError(message)
     tic = time.time()
 
